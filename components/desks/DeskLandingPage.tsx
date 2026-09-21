@@ -77,10 +77,7 @@ export default async function DeskLandingPage({
 }: {
   desk: Desk;
 }) {
-  const {
-    data,
-    error,
-  } = await supabase
+  let storiesQuery = supabase
     .from("stories")
     .select(`
       id,
@@ -95,17 +92,32 @@ export default async function DeskLandingPage({
       is_exclusive,
       audio_url
     `)
-    .eq(
-      "desk_id",
-      desk.id,
-    )
     .in(
       "status",
       [
         "published",
         "updated",
       ],
-    )
+    );
+
+  if (desk.slug === "features") {
+    storiesQuery =
+      storiesQuery.eq(
+        "story_type",
+        "feature",
+      );
+  } else {
+    storiesQuery =
+      storiesQuery.eq(
+        "desk_id",
+        desk.id,
+      );
+  }
+
+  const {
+    data,
+    error,
+  } = await storiesQuery
     .order(
       "published_at",
       {
