@@ -56,9 +56,9 @@ export default async function SiteHeader() {
             <span className="hidden h-3 w-px bg-white/25 sm:block" />
 
             <span className="hidden sm:block">
-              Entertainment news.
-              Straight from the
-              source.
+              Boxing news.
+              From ringside to the
+              final bell.
             </span>
           </div>
 
@@ -121,23 +121,50 @@ export default async function SiteHeader() {
 
       {/* Main masthead */}
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex min-h-[130px] items-center justify-center py-7 text-center">
+
+        <div className="grid min-h-[190px] grid-cols-1 items-center py-5 text-center md:grid-cols-[1fr_auto_1fr] md:gap-2">
+
+          {/* Left boxing glove */}
+          <div
+            aria-hidden="true"
+            className="hidden items-center justify-end md:flex"
+          >
+            <img
+              src="/branding/boxing-glove-left.png"
+              alt=""
+              className="h-[150px] w-[240px] origin-right scale-[1.35] object-contain object-right lg:h-[180px] lg:w-[290px] lg:scale-[1.4]"
+            />
+          </div>
+
+          {/* Masthead title */}
           <a
             href="/"
-            className="group inline-block"
+            className="group relative z-10 inline-block px-2"
           >
-            <div className="text-[clamp(2.6rem,6vw,5.4rem)] font-black leading-[0.8] tracking-[-0.065em] text-white">
-              INFORMANT{" "}
+            <div className="whitespace-nowrap text-[clamp(2.6rem,5vw,5.2rem)] font-black leading-[0.8] tracking-[-0.065em] text-white">
+              BOXING RING{" "}
               <span className="text-red-600">
-                WIRE
+                NEWS
               </span>
             </div>
 
             <div className="mt-4 text-[10px] font-black uppercase tracking-[0.5em] text-white/75 sm:text-xs">
-              Entertainment starts
-              here.
+              FROM THE GYM TO THE RING
             </div>
           </a>
+
+          {/* Right boxing glove */}
+          <div
+            aria-hidden="true"
+            className="hidden items-center justify-start md:flex"
+          >
+            <img
+              src="/branding/boxing-glove-right.png"
+              alt=""
+              className="h-[150px] w-[240px] origin-left scale-[1.35] object-contain object-left lg:h-[180px] lg:w-[290px] lg:scale-[1.4]"
+            />
+          </div>
+
         </div>
 
         {/* Desk navigation */}
@@ -154,12 +181,6 @@ export default async function SiteHeader() {
             ),
           )}
 
-          <a
-            href="/exclusives"
-            className="whitespace-nowrap text-white/75 transition hover:text-red-500"
-          >
-            Exclusives
-          </a>
 
           <a
             href="/search"

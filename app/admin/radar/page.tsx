@@ -359,7 +359,7 @@ export default async function RadarPage() {
             </h1>
 
             <p className="mt-3 max-w-2xl text-black/55">
-              Incoming entertainment
+              Incoming boxing
               intelligence discovered
               across trusted sources.
             </p>

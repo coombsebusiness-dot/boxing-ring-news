@@ -179,7 +179,7 @@ export async function extractArticleText(
 
           headers: {
             "User-Agent":
-              "Mozilla/5.0 (compatible; InformantWireResearch/1.0; +https://informantwire.com)",
+              "Mozilla/5.0 (compatible; BoxingRingNewsResearch/1.0; +https://boxingringnews.com)",
 
             Accept:
               "text/html,application/xhtml+xml",
@@ -383,7 +383,7 @@ export async function extractArticleText(
 
   /*
    * Keep research context manageable.
-   * This is far beyond what a normal entertainment
+   * This is far beyond what a normal boxing
    * news article should require while preventing
    * pathological pages from flooding the model.
    */

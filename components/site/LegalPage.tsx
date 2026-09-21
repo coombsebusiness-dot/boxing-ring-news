@@ -14,7 +14,7 @@ type LegalPageProps = {
 };
 
 export default function LegalPage({
-  eyebrow = "Informant Wire",
+  eyebrow = "Boxing Ring News",
   title,
   intro,
   updated = "14 September 2026",

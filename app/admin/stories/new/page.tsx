@@ -66,7 +66,7 @@ export default async function NewStoryPage() {
           </h1>
 
           <p className="mt-3 text-black/55">
-            Create original Informant Wire coverage
+            Create original Boxing Ring News coverage
             directly in the newsroom.
           </p>
         </div>

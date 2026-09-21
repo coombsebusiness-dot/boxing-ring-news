@@ -76,7 +76,7 @@ export async function generateStoryAudio(
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ??
-    "https://informantwire.com";
+    "https://boxingringnews.com";
 
   const articleUrl =
     new URL(

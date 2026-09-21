@@ -13,7 +13,7 @@ import {
 export const metadata: Metadata = {
   title: "PR & Story Submissions",
   description:
-    "Send press releases, story pitches, interview opportunities, screeners and entertainment industry news to Informant Wire.",
+    "Send boxing press releases, fight announcements, interview opportunities, event invitations and story tips to Boxing Ring News.",
 };
 
 type PRPageProps = {
@@ -37,20 +37,20 @@ const submissionTypes = [
     "Interview Offer",
   ],
   [
-    "review_request",
-    "Review Request",
+    "fight_announcement",
+    "Fight Announcement",
   ],
   [
-    "screening_invite",
-    "Screening Invite",
+    "media_day_invite",
+    "Media Day Invite",
   ],
   [
     "event_invite",
-    "Event Invite",
+    "Event / Media Invite",
   ],
   [
     "asset_delivery",
-    "Asset Delivery",
+    "Photos / Media Assets",
   ],
   [
     "correction",
@@ -63,27 +63,12 @@ const submissionTypes = [
 ] as const;
 
 const desks = [
-  ["film", "Film"],
-  [
-    "television",
-    "Television",
-  ],
-  [
-    "streaming",
-    "Streaming",
-  ],
-  ["music", "Music"],
-  ["gaming", "Gaming"],
-  [
-    "celebrity",
-    "Celebrity",
-  ],
-  ["awards", "Awards"],
-  [
-    "industry",
-    "Industry",
-  ],
-  ["culture", "Culture"],
+  ["news", "News"],
+  ["fights", "Fights"],
+  ["fighters", "Fighters"],
+  ["results", "Results"],
+  ["features", "Features"],
+  ["exclusives", "Exclusives"],
 ] as const;
 
 export default async function PRPage({
@@ -104,7 +89,7 @@ export default async function PRPage({
     <LegalPage
       eyebrow="PR & Submissions"
       title="Send Us Your Story"
-      intro="Informant Wire welcomes press releases, interview opportunities, screening information, announcements and story pitches from across the entertainment industry."
+      intro="Boxing Ring News welcomes press releases, fight announcements, interview opportunities, event invitations and story tips from across the boxing world."
     >
       {submitted ? (
         <div className="rounded-2xl border border-green-600/20 bg-green-50 p-6">
@@ -117,7 +102,7 @@ export default async function PRPage({
           </h2>
 
           <p className="mt-3 leading-7 text-black/60">
-            Your submission has been added to the Informant Wire editorial inbox for review.
+            Your submission has been added to the Boxing Ring News editorial inbox for review.
           </p>
         </div>
       ) : null}
@@ -131,10 +116,10 @@ export default async function PRPage({
           <p className="mt-2 leading-7 text-black/65">
             We could not submit your story. Please check the information below and try again, or email us directly at{" "}
             <a
-              href="mailto:editor@informantwire.com"
+              href="mailto:editor@boxingringnews.com"
               className="font-bold text-red-600 hover:underline"
             >
-              editor@informantwire.com
+              editor@boxingringnews.com
             </a>
             .
           </p>
@@ -143,8 +128,8 @@ export default async function PRPage({
 
       <LegalSection title="What we cover">
         <p>
-          Informant Wire covers film, television, streaming, music,
-          gaming, celebrity, awards, industry and entertainment culture.
+          Boxing Ring News covers fighters, fights, results, championships,
+          promoters, trainers, rankings and the wider boxing industry.
         </p>
 
         <p>
@@ -163,7 +148,7 @@ export default async function PRPage({
         </h2>
 
         <p className="mt-3 max-w-2xl leading-7 text-black/60">
-          Send your story directly to the Informant Wire newsroom. The more useful detail you provide, the easier it is for us to assess quickly.
+          Send your story directly to the Boxing Ring News newsroom. The more useful detail you provide, the easier it is for us to assess quickly.
         </p>
 
         <form
@@ -221,7 +206,7 @@ export default async function PRPage({
                 type="text"
                 name="company_name"
                 className="editor-input"
-                placeholder="Studio, agency, label, production company..."
+                placeholder="Promoter, management company, broadcaster, agency..."
               />
             </Field>
 
@@ -230,7 +215,7 @@ export default async function PRPage({
                 type="text"
                 name="sender_role"
                 className="editor-input"
-                placeholder="Publicist, producer, filmmaker..."
+                placeholder="Publicist, promoter, manager, trainer..."
               />
             </Field>
           </div>
@@ -333,12 +318,34 @@ export default async function PRPage({
             </Field>
           </div>
 
+          <div className="rounded-xl border border-black/10 bg-white p-5">
+            <Field
+              label="Spam check: How many rounds are in a standard modern men's world championship boxing fight?"
+              required
+            >
+              <input
+                type="text"
+                name="boxing_spam_answer"
+                required
+                inputMode="numeric"
+                autoComplete="off"
+                maxLength={2}
+                className="editor-input"
+                placeholder="Enter your answer"
+              />
+            </Field>
+
+            <p className="mt-3 text-sm leading-6 text-black/45">
+              A quick boxing question helps us prevent automated spam.
+            </p>
+          </div>
+
           <div className="border-t border-black/10 pt-6">
             <button
               type="submit"
               className="rounded-lg bg-red-600 px-7 py-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-black"
             >
-              Send to Informant Wire
+              Send to Boxing Ring News
             </button>
 
             <p className="mt-4 text-sm leading-6 text-black/45">
@@ -355,10 +362,10 @@ export default async function PRPage({
 
         <p className="text-xl font-black text-black">
           <a
-            href="mailto:editor@informantwire.com"
+            href="mailto:editor@boxingringnews.com"
             className="text-red-600 hover:underline"
           >
-            editor@informantwire.com
+            editor@boxingringnews.com
           </a>
         </p>
       </LegalSection>
@@ -375,7 +382,7 @@ export default async function PRPage({
 
       <LegalSection title="Independent creators">
         <p>
-          Independent filmmakers, producers, musicians, developers and creators are welcome to submit directly. A large publicity campaign is not required.
+          Independent fighters, trainers, promoters, managers and boxing organisations are welcome to submit directly. A large publicity campaign is not required.
         </p>
       </LegalSection>
 

@@ -156,7 +156,7 @@ export default async function StoriesPage({
             </h1>
 
             <p className="mt-3 text-black/55">
-              Manage Informant Wire
+              Manage Boxing Ring News
               coverage from first draft
               through publication.
             </p>

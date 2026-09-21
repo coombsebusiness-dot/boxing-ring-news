@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://informantwire.com";
+  "https://boxingringnews.com";
 
 function escapeXml(
   value: string,
@@ -83,7 +83,7 @@ export async function GET() {
     )}</loc>
     <news:news>
       <news:publication>
-        <news:name>Informant Wire</news:name>
+        <news:name>Boxing Ring News</news:name>
         <news:language>en</news:language>
       </news:publication>
       <news:publication_date>${escapeXml(

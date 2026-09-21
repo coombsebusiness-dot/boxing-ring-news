@@ -7,10 +7,10 @@ import { supabase } from "@/lib/supabase/public";
 export const metadata = {
   title: "Exclusives",
   description:
-    "Original reporting, exclusive interviews, first-look stories and exclusive entertainment news from Informant Wire.",
+    "Original boxing reporting, exclusive interviews, features and breaking stories from Boxing Ring News.",
   alternates: {
     canonical:
-      "https://informantwire.com/exclusives",
+      "https://boxingringnews.com/exclusives",
   },
 };
 
@@ -88,7 +88,7 @@ export default async function ExclusivesPage() {
     name: "Exclusives",
     slug: "exclusives",
     description:
-      "Original reporting, exclusive interviews, first-look stories and reporting from Informant Wire.",
+      "Original boxing reporting, exclusive interviews, features and stories from Boxing Ring News.",
   };
 
   const {
@@ -155,7 +155,7 @@ export default async function ExclusivesPage() {
         <div className="mx-auto max-w-[1500px] px-4">
           <header className="border-b-4 border-black py-8 md:py-10">
             <div className="text-xs font-black uppercase tracking-[0.22em] text-red-600">
-              Informant Wire
+              Boxing Ring News
             </div>
 
             <h1 className="mt-2 text-5xl font-black uppercase tracking-[-0.05em] md:text-7xl">

@@ -32,9 +32,9 @@ export default function AdminHeader() {
               className="shrink-0"
             >
               <div className="text-2xl font-black tracking-[-0.04em]">
-                INFORMANT{" "}
+                BOXING RING{" "}
                 <span className="text-red-600">
-                  WIRE
+                  NEWS
                 </span>
               </div>
 

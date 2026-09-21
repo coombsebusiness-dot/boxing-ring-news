@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://informantwire.com";
+  "https://boxingringnews.com";
 
 function escapeXml(
   value: string,
@@ -106,14 +106,14 @@ export async function GET() {
     `
 <rss version="2.0">
   <channel>
-    <title>Informant Wire</title>
+    <title>Boxing Ring News</title>
     <link>${siteUrl}</link>
-    <description>Latest entertainment news, exclusives and breaking stories from Informant Wire.</description>
+    <description>Latest boxing news, fights, results, exclusives and breaking stories from Boxing Ring News.</description>
     <language>en-gb</language>
     <lastBuildDate>${new Date(
       latestDate,
     ).toUTCString()}</lastBuildDate>
-    <generator>Informant Wire</generator>${items}
+    <generator>Boxing Ring News</generator>${items}
   </channel>
 </rss>
 `;

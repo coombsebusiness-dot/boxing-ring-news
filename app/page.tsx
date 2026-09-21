@@ -7,6 +7,10 @@ import { supabase } from "@/lib/supabase/public";
 
 export const revalidate = 60;
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://boxingringnews.com";
+
 type Desk = {
   name: string;
   slug: string;
@@ -93,6 +97,43 @@ function StoryImage({
 }
 
 export default async function HomePage() {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    "@id": `${siteUrl}/#organization`,
+    name: "Boxing Ring News",
+    url: siteUrl,
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteUrl}/branding/boxing-ring-news-logo.png`,
+      width: 512,
+      height: 512,
+    },
+    description:
+      "Independent boxing news covering fights, fighters, results, championships, promoters, rankings and the business of boxing.",
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    url: siteUrl,
+    name: "Boxing Ring News",
+    publisher: {
+      "@id": `${siteUrl}/#organization`,
+    },
+    inLanguage: "en-GB",
+  };
+
+  const homepageSchemaJson =
+    JSON.stringify([
+      organizationSchema,
+      websiteSchema,
+    ]).replace(
+      /</g,
+      "\\u003c",
+    );
+
   const [
     storiesResult,
     desksResult,
@@ -235,6 +276,14 @@ export default async function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            homepageSchemaJson,
+        }}
+      />
+
       <SiteHeader />
 
       <main className="bg-white text-black">
@@ -285,7 +334,7 @@ export default async function HomePage() {
 
                   <div className="mt-6 flex gap-4 text-xs font-bold uppercase tracking-wide text-white/70">
                     <span>
-                      Informant Wire
+                      Boxing Ring News
                     </span>
 
                     <span>
@@ -401,11 +450,11 @@ export default async function HomePage() {
           <section className="mt-5 border-l-4 border-red-600 bg-[#0d1215] px-5 py-4 text-white md:flex md:items-center md:justify-between md:gap-8">
             <div>
               <div className="text-xs font-black uppercase tracking-[0.18em] text-red-500">
-                Informant Wire Audio
+                Boxing Ring News Audio
               </div>
 
               <p className="mt-1 text-sm leading-6 text-white/70">
-                Selected stories are now available to listen to. Look for the Audio badge across Informant Wire.
+                Selected stories are now available to listen to. Look for the Audio badge across Boxing Ring News.
               </p>
             </div>
 
@@ -554,13 +603,13 @@ export default async function HomePage() {
                 <h2 className="text-2xl font-black uppercase leading-tight">
                   Get the latest
                   <br />
-                  entertainment news
+                  boxing news
                 </h2>
 
                 <p className="mt-4 text-sm leading-6 text-white/70">
                   Breaking stories,
                   exclusive scoops and
-                  entertainment updates,
+                  boxing updates,
                   straight to your inbox.
                 </p>
 
@@ -604,7 +653,7 @@ export default async function HomePage() {
                       </div>
 
                       <p className="mt-3 text-sm leading-6 text-black/50">
-                        Informant Wire exclusives, interviews and original reporting will appear here.
+                        Boxing Ring News exclusives, interviews and original reporting will appear here.
                       </p>
                     </div>
                   ) : null}
@@ -664,26 +713,36 @@ export default async function HomePage() {
 
           <section className="border-t border-black/10 pb-8 pt-5">
             <h2 className="mb-4 text-2xl font-black uppercase">
-              Explore by Topic
+              Explore Boxing
             </h2>
 
-            <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
               {desks.map(
                 (desk) => (
                   <a
-                    key={
-                      desk.id
-                    }
+                    key={desk.id}
                     href={`/${desk.slug}`}
-                    className="relative flex min-h-[120px] items-end overflow-hidden bg-[#11171a] p-4 text-white"
+                    className="group relative flex min-h-[110px] overflow-hidden rounded-sm border border-white/10 bg-[#111315] p-4 text-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-red-600/70 hover:shadow-lg"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black to-neutral-800" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.04] via-transparent to-red-950/20 opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
 
-                    <span className="relative text-sm font-black uppercase">
-                      {
-                        desk.name
-                      }
-                    </span>
+                    <div className="absolute left-0 top-0 h-[3px] w-10 bg-red-600 transition-all duration-300 group-hover:w-full" />
+
+                    <div className="relative flex w-full flex-col justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/40 transition-colors duration-300 group-hover:text-red-500">
+                        Explore
+                      </span>
+
+                      <div className="flex items-end justify-between gap-3">
+                        <span className="text-sm font-black uppercase tracking-wide">
+                          {desk.name}
+                        </span>
+
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/20 text-sm text-white/60 transition-all duration-300 group-hover:translate-x-1 group-hover:border-red-500 group-hover:bg-red-600 group-hover:text-white">
+                          →
+                        </span>
+                      </div>
+                    </div>
                   </a>
                 ),
               )}

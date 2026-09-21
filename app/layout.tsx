@@ -14,25 +14,28 @@ const geistMono = Geist_Mono({
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://informantwire.com";
+  "https://boxingringnews.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
 
   title: {
     default:
-      "Informant Wire | Entertainment News",
+      "Boxing Ring News | Boxing News, Fights & Results",
     template:
-      "%s | Informant Wire",
+      "%s | Boxing Ring News",
   },
 
   description:
-    "Independent entertainment news covering film, television, streaming, music, gaming, celebrity, awards, industry and culture.",
+    "Independent boxing news covering fights, fighters, results, championships, promoters, rankings and the business of boxing.",
 
   applicationName:
-    "Informant Wire",
+    "Boxing Ring News",
 
   alternates: {
+    canonical:
+      siteUrl,
+
     types: {
       "application/rss+xml":
         `${siteUrl}/feed.xml`,
@@ -41,20 +44,20 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: "website",
-    siteName: "Informant Wire",
+    siteName: "Boxing Ring News",
     title:
-      "Informant Wire | Entertainment News",
+      "Boxing Ring News | Boxing News, Fights & Results",
     description:
-      "Independent entertainment news covering film, television, streaming, music, gaming, celebrity, awards, industry and culture.",
+      "Independent boxing news covering fights, fighters, results, championships, promoters, rankings and the business of boxing.",
     url: siteUrl,
   },
 
   twitter: {
     card: "summary_large_image",
     title:
-      "Informant Wire | Entertainment News",
+      "Boxing Ring News | Boxing News, Fights & Results",
     description:
-      "Independent entertainment news covering film, television, streaming, music, gaming, celebrity, awards, industry and culture.",
+      "Independent boxing news covering fights, fighters, results, championships, promoters, rankings and the business of boxing.",
   },
 
   robots: {

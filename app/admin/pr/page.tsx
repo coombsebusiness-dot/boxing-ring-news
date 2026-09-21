@@ -36,10 +36,10 @@ const typeLabels:
       "Press Release",
     interview_offer:
       "Interview Offer",
-    review_request:
-      "Review Request",
-    screening_invite:
-      "Screening Invite",
+    fight_announcement:
+      "Fight Announcement",
+    media_day_invite:
+      "Media Day Invite",
     event_invite:
       "Event Invite",
     asset_delivery:
@@ -176,11 +176,11 @@ export default async function PRInboxPage() {
 
             <p className="mt-3 max-w-2xl text-black/55">
               Review press releases,
+              fight announcements,
               news tips, interview
-              offers, screening
-              invitations and other
-              submissions sent to
-              Informant Wire.
+              offers, media invitations
+              and other submissions sent
+              to Boxing Ring News.
             </p>
           </div>
 

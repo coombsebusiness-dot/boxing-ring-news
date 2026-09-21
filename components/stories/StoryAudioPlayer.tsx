@@ -242,7 +242,7 @@ export default function StoryAudioPlayer({
           </div>
 
           <div className="mt-1 text-sm font-bold text-black/50">
-            Informant Wire Audio
+            Boxing Ring News Audio
           </div>
         </div>
 

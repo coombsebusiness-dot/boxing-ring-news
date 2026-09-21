@@ -1,6 +1,4 @@
-import type {
-  Metadata,
-} from "next";
+import type { Metadata } from "next";
 
 import LegalPage, {
   LegalSection,
@@ -9,7 +7,7 @@ import LegalPage, {
 export const metadata: Metadata = {
   title: "Cookie Policy",
   description:
-    "Information about cookies and similar technologies used by Informant Wire.",
+    "Information about cookies and similar technologies used by Boxing Ring News.",
 };
 
 export default function CookiesPage() {
@@ -17,7 +15,7 @@ export default function CookiesPage() {
     <LegalPage
       eyebrow="Legal"
       title="Cookie Policy"
-      intro="This policy explains how Informant Wire may use cookies and similar technologies."
+      intro="This policy explains how Boxing Ring News, a publication within the Please Rewind Network, may use cookies and similar technologies."
     >
       <LegalSection title="What are cookies?">
         <p>
@@ -30,32 +28,41 @@ export default function CookiesPage() {
       <LegalSection title="Essential cookies">
         <p>
           Some cookies may be required for security, authentication,
-          administration and other functions necessary for the website
-          to operate.
+          administration and other functions necessary for the website to
+          operate.
         </p>
       </LegalSection>
 
       <LegalSection title="Analytics cookies">
         <p>
           We may use analytics technologies to understand traffic,
-          readership patterns and how visitors interact with Informant
-          Wire.
+          readership patterns and how visitors interact with Boxing Ring
+          News.
         </p>
       </LegalSection>
 
       <LegalSection title="Third-party services">
         <p>
-          Some services embedded in or connected to Informant Wire may
-          place their own cookies or use similar technologies under
-          their respective policies.
+          Some services embedded in or connected to Boxing Ring News may
+          place their own cookies or use similar technologies under their
+          respective policies.
+        </p>
+      </LegalSection>
+
+      <LegalSection title="Network services">
+        <p>
+          Boxing Ring News operates within the Please Rewind Network and may
+          use shared technical services across the network. Where those
+          services use cookies or similar technologies, their use is covered
+          by this policy where applicable to Boxing Ring News.
         </p>
       </LegalSection>
 
       <LegalSection title="Managing cookies">
         <p>
           Most browsers allow you to control or delete cookies through
-          browser settings. Blocking certain cookies may affect how
-          parts of the website function.
+          browser settings. Blocking certain cookies may affect how parts of
+          the website function.
         </p>
       </LegalSection>
 

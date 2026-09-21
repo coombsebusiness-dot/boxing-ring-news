@@ -12,8 +12,8 @@ const allowedTypes = new Set([
   "news_tip",
   "press_release",
   "interview_offer",
-  "review_request",
-  "screening_invite",
+  "media_day_invite",
+  "fight_announcement",
   "event_invite",
   "asset_delivery",
   "correction",
@@ -21,15 +21,12 @@ const allowedTypes = new Set([
 ]);
 
 const allowedDesks = new Set([
-  "film",
-  "television",
-  "streaming",
-  "music",
-  "gaming",
-  "celebrity",
-  "awards",
-  "industry",
-  "culture",
+  "news",
+  "fights",
+  "fighters",
+  "results",
+  "features",
+  "exclusives",
 ]);
 
 function text(
@@ -53,6 +50,23 @@ export async function submitPR(
   ) {
     redirect(
       "/pr?submitted=1",
+    );
+  }
+
+  // Boxing spam check.
+  // This is deliberately validated server-side so it cannot
+  // be bypassed simply by disabling browser validation.
+  const spamAnswer =
+    text(
+      formData,
+      "boxing_spam_answer",
+    );
+
+  if (
+    spamAnswer !== "12"
+  ) {
+    redirect(
+      "/pr?error=spam-check",
     );
   }
 

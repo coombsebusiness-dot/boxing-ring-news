@@ -5,19 +5,19 @@ const networkPromos = [
     name: "Please Rewind",
     largeImage: "/network/please-rewind.png",
     smallImage: "/network/please-rewind-small.png",
-    href: "https://pleaserewindmovies.com/?utm_source=informantwire&utm_medium=house_ad&utm_campaign=network_promo",
+    href: "https://pleaserewindmovies.com/?utm_source=boxingringnews&utm_medium=house_ad&utm_campaign=network_promo",
   },
   {
     name: "The Movie Trailer",
     largeImage: "/network/the-movie-trailer.png",
     smallImage: "/network/the-movie-trailer-small.png",
-    href: "https://the-movie-trailer.com/?utm_source=informantwire&utm_medium=house_ad&utm_campaign=network_promo",
+    href: "https://the-movie-trailer.com/?utm_source=boxingringnews&utm_medium=house_ad&utm_campaign=network_promo",
   },
   {
     name: "Fighter Movie",
     largeImage: "/network/fighter-movie.png",
     smallImage: "/network/fighter-movie-small.png",
-    href: "https://fighter-movie.com/?utm_source=informantwire&utm_medium=house_ad&utm_campaign=network_promo",
+    href: "https://fighter-movie.com/?utm_source=boxingringnews&utm_medium=house_ad&utm_campaign=network_promo",
   },
 ];
 

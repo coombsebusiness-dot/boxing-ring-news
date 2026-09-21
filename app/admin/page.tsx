@@ -115,7 +115,7 @@ export default async function AdminPage() {
             <p className="mt-3 max-w-2xl text-black/55">
               Monitor stories, incoming intelligence,
               developing coverage and editorial work
-              across Informant Wire.
+              across Boxing Ring News.
             </p>
           </div>
 
@@ -131,7 +131,7 @@ export default async function AdminPage() {
           <NewsroomStat
             label="Published"
             value={publishedStories}
-            description="Live Informant Wire stories"
+            description="Live Boxing Ring News stories"
           />
 
           <NewsroomStat
@@ -201,7 +201,7 @@ export default async function AdminPage() {
 
           <aside className="rounded-2xl bg-black p-7 text-white">
             <div className="text-xs font-black uppercase tracking-[0.18em] text-red-500">
-              Informant Wire
+              Boxing Ring News
             </div>
 
             <h2 className="mt-2 text-2xl font-black">

@@ -236,7 +236,7 @@ export default function SectionBuilder({
                         event.target.value,
                       )
                     }
-                    placeholder="Example: Casting Update"
+                    placeholder="Example: Fight Update"
                     className="editor-input"
                   />
                 </label>

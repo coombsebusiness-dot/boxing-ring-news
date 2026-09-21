@@ -21,8 +21,8 @@ import {
 } from "@/lib/research/extractClaims";
 
 import {
-  writeInformantWireArticle,
-} from "@/lib/newsroom/InformantWireArticleWriter";
+  writeBoxingRingNewsArticle,
+} from "@/lib/newsroom/BoxingRingNewsArticleWriter";
 
 async function getNewsroomClient() {
   const supabase =
@@ -1329,7 +1329,7 @@ if (isHero) {
     "Unknown source";
 
   const generated =
-    await writeInformantWireArticle(
+    await writeBoxingRingNewsArticle(
       {
         sourceName,
 
@@ -1684,13 +1684,19 @@ export async function verifyRadarStory(
             claim:
               claim.claim,
             evidence_type:
-              claim.category === "casting"
-                ? "casting"
-                : claim.category === "release"
-                  ? "release"
-                  : claim.category === "business"
-                    ? "business"
-                    : "fact",
+              claim.category === "fight"
+                ? "fight_announcement"
+                : claim.category === "result"
+                  ? "fight_result"
+                  : claim.category === "ranking"
+                    ? "ranking"
+                    : claim.category === "title"
+                      ? "title"
+                      : claim.category === "weigh_in"
+                        ? "weigh_in"
+                        : claim.category === "business"
+                          ? "business"
+                          : "fact",
             verification_status:
               "supported",
             confidence_score:

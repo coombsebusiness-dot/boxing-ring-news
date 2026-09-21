@@ -141,7 +141,7 @@ export default async function DeskLandingPage({
         <div className="mx-auto max-w-[1500px] px-4">
           <header className="border-b-4 border-black py-8 md:py-10">
             <div className="text-xs font-black uppercase tracking-[0.22em] text-red-600">
-              Informant Wire
+              Boxing Ring News
             </div>
 
             <h1 className="mt-2 text-5xl font-black uppercase tracking-[-0.05em] md:text-7xl">

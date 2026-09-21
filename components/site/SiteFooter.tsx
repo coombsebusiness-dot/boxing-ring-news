@@ -4,38 +4,23 @@ const sections = [
   {
     title: "Coverage",
     links: [
-      ["Film", "/film"],
-      ["Television", "/television"],
-      ["Streaming", "/streaming"],
-      ["Music", "/music"],
-      ["Gaming", "/gaming"],
-      ["Celebrity", "/celebrity"],
-      ["Awards", "/awards"],
-      ["Industry", "/industry"],
-      ["Culture", "/culture"],
+      ["News", "/news"],
+      ["Fights", "/fights"],
+      ["Fighters", "/fighters"],
+      ["Results", "/results"],
+      ["Features", "/features"],
+      ["Exclusives", "/exclusives"],
     ],
   },
   {
-    title: "Informant Wire",
+    title: "Boxing Ring News",
     links: [
       ["About", "/about"],
       ["Contact", "/contact"],
-      [
-        "PR & Submissions",
-        "/pr",
-      ],
-      [
-        "Editorial Policy",
-        "/editorial-policy",
-      ],
-      [
-        "Corrections Policy",
-        "/corrections-policy",
-      ],
-      [
-        "Exclusives",
-        "/exclusives",
-      ],
+      ["PR & Submissions", "/pr"],
+      ["Editorial Policy", "/editorial-policy"],
+      ["Corrections Policy", "/corrections-policy"],
+      ["Exclusives", "/exclusives"],
     ],
   },
   {
@@ -59,23 +44,31 @@ export default function SiteFooter() {
               className="inline-block"
             >
               <div className="text-3xl font-black tracking-[-0.04em]">
-                INFORMANT{" "}
+                BOXING RING{" "}
                 <span className="text-red-600">
-                  WIRE
+                  NEWS
                 </span>
               </div>
             </Link>
 
             <p className="mt-4 max-w-md text-sm leading-7 text-white/50">
               Independent coverage of
-              film, television,
-              streaming, music,
-              gaming and the wider
-              entertainment industry.
+              fighters, fights,
+              results, championships,
+              rankings and the wider
+              boxing industry.
             </p>
 
             <p className="mt-5 text-xs font-black uppercase tracking-[0.16em] text-white/30">
-              Entertainment starts here.
+              From the gym to the ring.
+            </p>
+
+            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/25">
+              A Please Rewind Network publication
+            </p>
+
+            <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/25">
+              A Please Rewind Network publication
             </p>
           </div>
 
@@ -123,14 +116,14 @@ export default function SiteFooter() {
           <div>
             ©{" "}
             {new Date().getFullYear()}{" "}
-            Informant Wire
+            Boxing Ring News
           </div>
 
           <a
-            href="mailto:editor@informantwire.com"
+            href="mailto:editor@boxingringnews.com"
             className="transition hover:text-white"
           >
-            editor@informantwire.com
+            editor@boxingringnews.com
           </a>
         </div>
       </div>

@@ -294,7 +294,7 @@ export async function POST() {
           {
             headers: {
               "User-Agent":
-                "InformantWireRadar/1.0",
+                "BoxingRingNewsRadar/1.0",
               Accept:
                 "application/rss+xml, application/xml, text/xml, */*",
             },

@@ -151,7 +151,7 @@ export default async function EditStoryPage({
           </h1>
 
           <p className="mt-3 text-black/55">
-            Update, review and publish this Informant Wire story.
+            Update, review and publish this Boxing Ring News story.
           </p>
 
           {saved === "1" ? (

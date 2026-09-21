@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://informantwire.com";
+  "https://boxingringnews.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [

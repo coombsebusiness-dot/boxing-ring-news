@@ -37,10 +37,10 @@ const typeLabels:
       "Press Release",
     interview_offer:
       "Interview Offer",
-    review_request:
-      "Review Request",
-    screening_invite:
-      "Screening Invite",
+    fight_announcement:
+      "Fight Announcement",
+    media_day_invite:
+      "Media Day Invite",
     event_invite:
       "Event Invite",
     asset_delivery:

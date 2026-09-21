@@ -5,13 +5,13 @@ import {
 export type ExtractedClaim = {
   claim: string;
   category:
-    | "casting"
-    | "production"
-    | "release"
+    | "fight"
+    | "fighter"
+    | "result"
     | "business"
-    | "awards"
-    | "creative"
-    | "performance"
+    | "ranking"
+    | "title"
+    | "weigh_in"
     | "other";
   sourceExcerpt: string | null;
   confidenceScore: number;
@@ -84,8 +84,8 @@ export async function extractClaims(
           {
             role: "system",
             content: `
-You are the factual claim extraction desk for Informant Wire,
-a UK entertainment newsroom.
+You are the factual claim extraction desk for Boxing Ring News,
+a UK boxing newsroom.
 
 Your job is NOT to write an article.
 
@@ -101,7 +101,7 @@ STRICT RULES:
 - Do not turn opinion, speculation or promotional language into fact.
 - Preserve uncertainty when the source itself is uncertain.
 - A claim should contain one main checkable factual assertion.
-- Prefer material claims relevant to an entertainment news report.
+- Prefer material claims relevant to a boxing news report.
 - Ignore navigation, adverts, newsletter text and boilerplate.
 - Ignore trivial details that would not matter to verification.
 - Do not claim that anything has been independently verified.
@@ -128,13 +128,13 @@ Use:
 below 60 = avoid extracting unless editorially important
 
 category must be one of:
-casting
-production
-release
+fight
+fighter
+result
 business
-awards
-creative
-performance
+ranking
+title
+weigh_in
 other
 
 Return ONLY valid JSON:
@@ -143,7 +143,7 @@ Return ONLY valid JSON:
   "claims": [
     {
       "claim": "One concise factual assertion.",
-      "category": "casting",
+      "category": "fight",
       "sourceExcerpt": "Short supporting source excerpt.",
       "confidenceScore": 95
     }
@@ -212,13 +212,13 @@ ${input.articleText}
 
   const allowedCategories =
     new Set([
-      "casting",
-      "production",
-      "release",
+      "fight",
+      "fighter",
+      "result",
       "business",
-      "awards",
-      "creative",
-      "performance",
+      "ranking",
+      "title",
+      "weigh_in",
       "other",
     ]);
 

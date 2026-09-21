@@ -14,7 +14,11 @@ import { sanitizeStoryHtml } from "@/lib/security/sanitizeStoryHtml";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "https://informantwire.com";
+  "https://boxingringnews.com";
+
+const publisherAudioUrl =
+  process.env.PUBLISHER_AUDIO_URL ??
+  "https://publisheraudio.com";
 
 type PageProps = {
   params: Promise<{
@@ -233,11 +237,55 @@ export async function generateMetadata({
     await getDesk(slug);
 
   if (desk) {
+    const canonicalUrl =
+      `${siteUrl}/${desk.slug}`;
+
+    const metadataTitle =
+      `${desk.name} News | Boxing Ring News`;
+
+    const metadataDescription =
+      desk.description ||
+      `Latest ${desk.name.toLowerCase()} news, stories and updates from Boxing Ring News.`;
+
     return {
-      title: `${desk.name} News | Informant Wire`,
+      title:
+        metadataTitle,
+
       description:
-        desk.description ||
-        `Latest ${desk.name.toLowerCase()} news, stories and updates from Informant Wire.`,
+        metadataDescription,
+
+      alternates: {
+        canonical:
+          canonicalUrl,
+      },
+
+      openGraph: {
+        type:
+          "website",
+
+        url:
+          canonicalUrl,
+
+        siteName:
+          "Boxing Ring News",
+
+        title:
+          metadataTitle,
+
+        description:
+          metadataDescription,
+      },
+
+      twitter: {
+        card:
+          "summary_large_image",
+
+        title:
+          metadataTitle,
+
+        description:
+          metadataDescription,
+      },
     };
   }
 
@@ -248,27 +296,52 @@ export async function generateMetadata({
     return {};
   }
 
+  const canonicalUrl =
+    `${siteUrl}/${story.slug}`;
+
+  const metadataTitle =
+    story.seo_title ||
+    story.title;
+
+  const metadataDescription =
+    story.meta_description ||
+    story.excerpt ||
+    undefined;
+
   return {
-    title:
-      story.seo_title ||
-      story.title,
+    title: metadataTitle,
 
     description:
-      story.meta_description ||
-      story.excerpt ||
-      undefined,
+      metadataDescription,
+
+    alternates: {
+      canonical:
+        canonicalUrl,
+    },
 
     openGraph: {
+      type: "article",
+
+      url:
+        canonicalUrl,
+
+      siteName:
+        "Boxing Ring News",
+
       title:
-        story.seo_title ||
-        story.title,
+        metadataTitle,
 
       description:
-        story.meta_description ||
-        story.excerpt ||
+        metadataDescription,
+
+      publishedTime:
+        story.published_at ||
         undefined,
 
-      type: "article",
+      modifiedTime:
+        story.updated_at ||
+        story.published_at ||
+        undefined,
 
       images:
         story.hero_image_url
@@ -276,7 +349,29 @@ export async function generateMetadata({
               {
                 url:
                   story.hero_image_url,
+
+                alt:
+                  story.hero_image_alt ||
+                  story.title,
               },
+            ]
+          : [],
+    },
+
+    twitter: {
+      card:
+        "summary_large_image",
+
+      title:
+        metadataTitle,
+
+      description:
+        metadataDescription,
+
+      images:
+        story.hero_image_url
+          ? [
+              story.hero_image_url,
             ]
           : [],
     },
@@ -486,7 +581,7 @@ export default async function StoryPage({
               "Organization",
 
             name:
-              "Informant Wire",
+              "Boxing Ring News",
 
             url:
               siteUrl,
@@ -494,13 +589,30 @@ export default async function StoryPage({
 
     publisher: {
       "@type":
-        "Organization",
+        "NewsMediaOrganization",
+
+      "@id":
+        `${siteUrl}/#organization`,
 
       name:
-        "Informant Wire",
+        "Boxing Ring News",
 
       url:
         siteUrl,
+
+      logo: {
+        "@type":
+          "ImageObject",
+
+        url:
+          `${siteUrl}/branding/boxing-ring-news-logo.png`,
+
+        width:
+          512,
+
+        height:
+          512,
+      },
     },
   };
 
@@ -568,7 +680,7 @@ export default async function StoryPage({
               <span className="font-bold text-black">
                 By{" "}
                 {story.author_name ||
-                  "Informant Wire"}
+                  "Boxing Ring News"}
               </span>
 
               {publishedDate ? (
@@ -591,7 +703,7 @@ export default async function StoryPage({
             {story.audio_url &&
             story.publisher_audio_article_id ? (
               <iframe
-                src={`https://publisheraudio.com/player/${story.publisher_audio_article_id}`}
+                src={`${publisherAudioUrl}/player/${story.publisher_audio_article_id}`}
                 title={`Listen to ${story.title}`}
                 loading="lazy"
                 allow="autoplay"
@@ -868,21 +980,21 @@ export default async function StoryPage({
 
                 <section className="border-t-4 border-black pt-5">
                   <div className="text-xs font-black uppercase tracking-[0.18em] text-red-600">
-                    Informant Wire
+                    Boxing Ring News
                   </div>
 
                   <h2 className="mt-2 text-2xl font-black leading-tight text-black">
-                    Entertainment
+                    Boxing
                     starts here.
                   </h2>
 
                   <p className="mt-4 text-sm leading-6 text-black/50">
                     Independent
-                    coverage of film,
-                    television,
-                    streaming, music,
-                    gaming and the
-                    wider entertainment
+                    coverage of fighters,
+                    fights, results,
+                    championships,
+                    rankings and the
+                    wider boxing
                     industry.
                   </p>
                 </section>
