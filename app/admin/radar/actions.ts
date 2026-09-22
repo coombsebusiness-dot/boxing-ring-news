@@ -21,6 +21,10 @@ import {
 } from "@/lib/research/extractClaims";
 
 import {
+  researchStoryWithWebSearch,
+} from "@/lib/research/researchStoryWithWebSearch";
+
+import {
   writeBoxingRingNewsArticle,
 } from "@/lib/newsroom/BoxingRingNewsArticleWriter";
 
@@ -1760,6 +1764,8 @@ export async function researchAndWriteRadarStory(
     .from("radar_items")
     .select(`
       id,
+      headline,
+      summary,
       source_url,
       extracted_text
     `)
@@ -1792,32 +1798,138 @@ export async function researchAndWriteRadarStory(
       );
     }
 
-    const extracted =
-      await extractArticleText(
-        item.source_url,
+    let extracted;
+
+    try {
+      extracted =
+        await extractArticleText(
+          item.source_url,
+        );
+    } catch (error) {
+      const extractionMessage =
+        error instanceof Error
+          ? error.message
+          : "Source article could not be extracted.";
+
+      console.warn(
+        `Direct source extraction failed for ${item.source_url}: ${extractionMessage}`,
       );
 
-    const {
-      error: updateError,
-    } = await supabase
-      .from("radar_items")
-      .update({
-        raw_content:
-          extracted.rawHtml,
-        extracted_text:
-          extracted.text,
-        processing_error:
-          null,
-      })
-      .eq(
-        "id",
-        item.id,
-      );
+      /*
+       * A publisher may legitimately block automated
+       * article retrieval with 403/429/etc.
+       *
+       * Research & Write should not stop there.
+       * Fall back to live web research and give the
+       * existing newsroom writer that researched brief.
+       */
+      try {
+        const webResearch =
+          await researchStoryWithWebSearch({
+            headline:
+              item.headline,
+            summary:
+              item.summary,
+            originalSourceUrl:
+              item.source_url,
+          });
 
-    if (updateError) {
-      throw new Error(
-        updateError.message,
-      );
+        const {
+          error: researchUpdateError,
+        } = await supabase
+          .from("radar_items")
+          .update({
+            extracted_text:
+              webResearch.text,
+            processing_error:
+              null,
+          })
+          .eq(
+            "id",
+            item.id,
+          );
+
+        if (researchUpdateError) {
+          throw new Error(
+            researchUpdateError.message,
+          );
+        }
+
+        console.info(
+          `Radar web research fallback succeeded for ${item.source_url}.`,
+        );
+
+        /*
+         * Do not return here.
+         *
+         * writeStoryFromRadar below reloads the Radar
+         * item, sees the new extracted_text and sends
+         * the research brief to the existing writer.
+         */
+      } catch (researchError) {
+        const researchMessage =
+          researchError instanceof Error
+            ? researchError.message
+            : "Web research fallback failed.";
+
+        const combinedMessage =
+          `${extractionMessage} Web research fallback: ${researchMessage}`;
+
+        const {
+          error: processingError,
+        } = await supabase
+          .from("radar_items")
+          .update({
+            processing_error:
+              combinedMessage,
+          })
+          .eq(
+            "id",
+            item.id,
+          );
+
+        if (processingError) {
+          console.error(
+            "Failed to save Radar processing error:",
+            processingError,
+          );
+        }
+
+        console.error(
+          `Radar web research fallback failed for ${item.source_url}: ${researchMessage}`,
+        );
+
+        revalidatePath(
+          "/admin/radar",
+        );
+
+        return;
+      }
+    }
+
+    if (extracted) {
+      const {
+        error: updateError,
+      } = await supabase
+        .from("radar_items")
+        .update({
+          raw_content:
+            extracted.rawHtml,
+          extracted_text:
+            extracted.text,
+          processing_error:
+            null,
+        })
+        .eq(
+          "id",
+          item.id,
+        );
+
+      if (updateError) {
+        throw new Error(
+          updateError.message,
+        );
+      }
     }
   }
 
@@ -1884,10 +1996,49 @@ export async function researchRadarSource(
     );
   }
 
-  const extracted =
-    await extractArticleText(
-      item.source_url,
+  let extracted;
+
+  try {
+    extracted =
+      await extractArticleText(
+        item.source_url,
+      );
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Source article could not be extracted.";
+
+    const {
+      error: processingError,
+    } = await supabase
+      .from("radar_items")
+      .update({
+        processing_error:
+          message,
+      })
+      .eq(
+        "id",
+        item.id,
+      );
+
+    if (processingError) {
+      console.error(
+        "Failed to save Radar processing error:",
+        processingError,
+      );
+    }
+
+    console.warn(
+      `Radar research skipped for ${item.source_url}: ${message}`,
     );
+
+    revalidatePath(
+      "/admin/radar",
+    );
+
+    return;
+  }
 
   const {
     error: updateError,

@@ -236,13 +236,11 @@ export default async function HomePage() {
     .sort(
       (a, b) =>
         new Date(
-          b.updated_at ||
-            b.published_at ||
+          b.published_at ||
             0,
         ).getTime() -
         new Date(
-          a.updated_at ||
-            a.published_at ||
+          a.published_at ||
             0,
         ).getTime(),
     )
@@ -261,7 +259,19 @@ export default async function HomePage() {
   const featuredStories = [
     ...featured,
     ...featuredFallback,
-  ].slice(0, 3);
+  ]
+    .sort(
+      (a, b) =>
+        new Date(
+          b.published_at ||
+            0,
+        ).getTime() -
+        new Date(
+          a.published_at ||
+            0,
+        ).getTime(),
+    )
+    .slice(0, 3);
 
   const exclusives =
     stories

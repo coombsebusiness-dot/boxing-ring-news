@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
 import Parser from "rss-parser";
 
+import * as cheerio from "cheerio";
+
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { findBestClusterMatch } from "@/lib/radar/clusterMatcher";
 
 import { classifyDesk } from "@/lib/radar/deskClassifier";
+
+import { discoverSourceArticles } from "@/lib/radar/discoverSourceArticles";
+import { sendRadarNotification } from "@/lib/notifications/sendRadarNotification";
 
 const parser = new Parser({
   timeout: 15000,
@@ -77,6 +83,196 @@ function authorityScore(
   );
 }
 
+function calculatePriority(
+  publishedAt: string | null,
+  authorityTier: number,
+  isPrimarySource: boolean,
+) {
+  const freshness =
+    calculateFreshnessScore(
+      publishedAt,
+    );
+
+  /*
+   * Official primary source:
+   * 0-3 hours = urgent
+   */
+  if (
+    isPrimarySource &&
+    freshness >= 95
+  ) {
+    return "urgent";
+  }
+
+  /*
+   * Official primary source:
+   * up to 24 hours = high
+   *
+   * Tier 1 publication:
+   * up to 6 hours = high
+   */
+  if (
+    (isPrimarySource &&
+      freshness >= 75) ||
+    (authorityTier === 1 &&
+      freshness >= 90)
+  ) {
+    return "high";
+  }
+
+  return "normal";
+}
+
+async function getExactPublishedAt(
+  url: string,
+) {
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () =>
+        controller.abort(),
+      10000,
+    );
+
+  try {
+    const response =
+      await fetch(
+        url,
+        {
+          signal:
+            controller.signal,
+
+          redirect:
+            "follow",
+
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (compatible; BoxingRingNewsRadar/1.0)",
+
+            Accept:
+              "text/html,application/xhtml+xml",
+          },
+
+          cache:
+            "no-store",
+        },
+      );
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const html =
+      await response.text();
+
+    const $ =
+      cheerio.load(html);
+
+    /*
+     * Prefer the precise Open Graph
+     * publication timestamp.
+     */
+    const metaPublishedAt =
+      $(
+        'meta[property="article:published_time"]',
+      )
+        .first()
+        .attr("content") ??
+      $(
+        'meta[name="article:published_time"]',
+      )
+        .first()
+        .attr("content");
+
+    if (
+      metaPublishedAt &&
+      !Number.isNaN(
+        Date.parse(
+          metaPublishedAt,
+        ),
+      )
+    ) {
+      return new Date(
+        metaPublishedAt,
+      ).toISOString();
+    }
+
+    /*
+     * Fall back to JSON-LD.
+     */
+    for (
+      const element of
+      $('script[type="application/ld+json"]')
+        .toArray()
+    ) {
+      const jsonText =
+        $(element).html();
+
+      if (!jsonText) {
+        continue;
+      }
+
+      const match =
+        jsonText.match(
+          /"datePublished"\s*:\s*"([^"]+)"/i,
+        );
+
+      const candidate =
+        match?.[1];
+
+      if (
+        candidate &&
+        !Number.isNaN(
+          Date.parse(candidate),
+        )
+      ) {
+        return new Date(
+          candidate,
+        ).toISOString();
+      }
+    }
+
+    /*
+     * Last resort: a valid ISO-style
+     * <time datetime="..."> value.
+     */
+    const timeDatetime =
+      $("time[datetime]")
+        .first()
+        .attr("datetime");
+
+    if (
+      timeDatetime &&
+      /^\d{4}-\d{2}-\d{2}(?:[T\s]|$)/.test(
+        timeDatetime,
+      ) &&
+      !Number.isNaN(
+        Date.parse(
+          timeDatetime,
+        ),
+      )
+    ) {
+      return new Date(
+        timeDatetime,
+      ).toISOString();
+    }
+
+    return null;
+  } catch {
+    /*
+     * Enrichment failure must not stop
+     * the whole Radar run.
+     */
+    return null;
+  } finally {
+    clearTimeout(
+      timeout,
+    );
+  }
+}
+
 function cleanText(
   value:
     | string
@@ -99,55 +295,89 @@ function cleanText(
     .trim();
 }
 
-export async function POST() {
+export async function POST(
+  request: Request,
+) {
+  /*
+   * Radar can be started by either:
+   *
+   * 1. a logged-in newsroom user, or
+   * 2. our scheduled job using CRON_SECRET.
+   */
+  const cronSecret =
+    process.env.CRON_SECRET;
+
+  const authorization =
+    request.headers.get(
+      "authorization",
+    );
+
+  const isCronRequest =
+    Boolean(cronSecret) &&
+    authorization ===
+      `Bearer ${cronSecret}`;
+
+  /*
+   * Scheduled Radar runs do not have a
+   * Supabase user session, so use the
+   * server-only service-role client.
+   *
+   * Manual newsroom runs continue using
+   * the normal authenticated client.
+   */
   const supabase =
-    await createClient();
+    isCronRequest
+      ? createAdminClient()
+      : await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  if (!isCronRequest) {
+    const {
+      data: { user },
+    } =
+      await supabase.auth.getUser();
 
-  if (!user) {
-    return NextResponse.json(
-      {
-        error:
-          "Unauthorised",
-      },
-      {
-        status: 401,
-      },
-    );
-  }
+    if (!user) {
+      return NextResponse.json(
+        {
+          error:
+            "Unauthorised",
+        },
+        {
+          status: 401,
+        },
+      );
+    }
 
-  const {
-    data: newsroomUser,
-  } = await supabase
-    .from(
-      "newsroom_users",
-    )
-    .select(
-      "role",
-    )
-    .eq(
-      "user_id",
-      user.id,
-    )
-    .eq(
-      "is_active",
-      true,
-    )
-    .maybeSingle();
+    const {
+      data: newsroomUser,
+    } = await supabase
+      .from(
+        "newsroom_users",
+      )
+      .select(
+        "role",
+      )
+      .eq(
+        "user_id",
+        user.id,
+      )
+      .eq(
+        "is_active",
+        true,
+      )
+      .maybeSingle();
 
-  if (!newsroomUser) {
-    return NextResponse.json(
-      {
-        error:
-          "Forbidden",
-      },
-      {
-        status: 403,
-      },
-    );
+    if (!newsroomUser) {
+      return NextResponse.json(
+        {
+          error:
+            "Forbidden",
+        },
+        {
+          status: 403,
+        },
+      );
+    }
   }
 
   const {
@@ -159,17 +389,16 @@ export async function POST() {
       id,
       name,
       rss_url,
+      monitor_url,
+      ingestion_method,
+      source_type,
       authority_tier,
-      reliability_score
+      reliability_score,
+      is_primary_source
     `)
     .eq(
       "is_active",
       true,
-    )
-    .not(
-      "rss_url",
-      "is",
-      null,
     );
   const {
     data: desks,
@@ -273,10 +502,6 @@ export async function POST() {
     sources ?? []
   ) {
     try {
-      if (!source.rss_url) {
-        continue;
-      }
-
       await supabase
         .from("sources")
         .update({
@@ -288,40 +513,99 @@ export async function POST() {
           source.id,
         );
 
-      const response =
-        await fetch(
-          source.rss_url,
-          {
-            headers: {
-              "User-Agent":
-                "BoxingRingNewsRadar/1.0",
-              Accept:
-                "application/rss+xml, application/xml, text/xml, */*",
+      let feedItems: {
+        link?: string;
+        title?: string;
+        isoDate?: string;
+        pubDate?: string;
+        contentSnippet?: string;
+        content?: string;
+        summary?: string;
+        creator?: string;
+        author?: string;
+        guid?: string;
+        id?: string;
+      }[] = [];
+
+      if (
+        source.ingestion_method ===
+        "webpage"
+      ) {
+        if (!source.monitor_url) {
+          throw new Error(
+            "Webpage source has no monitor URL.",
+          );
+        }
+
+        const articles =
+          await discoverSourceArticles(
+            source.monitor_url,
+          );
+
+        /*
+         * Webpage discovery tells us that
+         * the article is visible now, but
+         * does not yet know its publication
+         * timestamp. Leave publishedAt null
+         * rather than inventing a date.
+         */
+        feedItems =
+          articles.map(
+            (article) => ({
+              link:
+                article.url,
+              title:
+                article.title,
+              guid:
+                article.url,
+              isoDate:
+                article.publishedAt ??
+                undefined,
+            }),
+          );
+      } else {
+        if (!source.rss_url) {
+          throw new Error(
+            "RSS source has no RSS URL.",
+          );
+        }
+
+        const response =
+          await fetch(
+            source.rss_url,
+            {
+              headers: {
+                "User-Agent":
+                  "BoxingRingNewsRadar/1.0",
+                Accept:
+                  "application/rss+xml, application/xml, text/xml, */*",
+              },
+
+              cache:
+                "no-store",
             },
-            cache:
-              "no-store",
-          },
-        );
+          );
 
-      if (!response.ok) {
-        throw new Error(
-          `HTTP ${response.status}`,
-        );
+        if (!response.ok) {
+          throw new Error(
+            `HTTP ${response.status}`,
+          );
+        }
+
+        const xml =
+          await response.text();
+
+        const feed =
+          await parser.parseString(
+            xml,
+          );
+
+        feedItems =
+          feed.items.slice(
+            0,
+            30,
+          );
       }
-
-      const xml =
-        await response.text();
-
-      const feed =
-        await parser.parseString(
-          xml,
-        );
-
-      const feedItems =
-        feed.items.slice(
-          0,
-          30,
-        );
 
       let sourceInserted = 0;
 
@@ -346,7 +630,7 @@ export async function POST() {
 
         discovered += 1;
 
-        const publishedAt =
+        let publishedAt =
           item.isoDate ||
           item.pubDate ||
           null;
@@ -387,6 +671,32 @@ export async function POST() {
           duplicates += 1;
           continue;
         }
+
+        /*
+         * Only brand-new primary-source
+         * webpage stories get an additional
+         * article request.
+         *
+         * Known URLs have already continued
+         * above, so repeat Radar runs do not
+         * refetch every article.
+         */
+        if (
+          source.is_primary_source &&
+          source.ingestion_method ===
+            "webpage"
+        ) {
+          const exactPublishedAt =
+            await getExactPublishedAt(
+              url,
+            );
+
+          if (exactPublishedAt) {
+            publishedAt =
+              exactPublishedAt;
+          }
+        }
+
         const deskClassification =
           classifyDesk(
             headline,
@@ -413,6 +723,13 @@ export async function POST() {
                 publishedAt,
             },
             openClusters ?? [],
+          );
+
+        const priority =
+          calculatePriority(
+            publishedAt,
+            source.authority_tier,
+            source.is_primary_source,
           );
 
         const {
@@ -450,8 +767,7 @@ export async function POST() {
             status:
               "new",
 
-            priority:
-              "normal",
+            priority,
 
             desk_id:
               assignedDeskId,
@@ -510,6 +826,28 @@ export async function POST() {
 
         inserted += 1;
         sourceInserted += 1;
+
+        /*
+         * Alert the newsroom only for
+         * genuinely new high/urgent items.
+         *
+         * sendRadarNotification handles its
+         * own failures, so ntfy can never
+         * break Radar ingestion.
+         */
+        if (
+          priority === "high" ||
+          priority === "urgent"
+        ) {
+          await sendRadarNotification({
+            headline,
+            sourceName:
+              source.name,
+            sourceUrl:
+              url,
+            priority,
+          });
+        }
       }
 
       await supabase
@@ -565,4 +903,42 @@ export async function POST() {
     failedSources,
     results,
   });
+}
+
+
+/*
+ * Vercel Cron invokes this route with GET.
+ *
+ * Only requests carrying our CRON_SECRET
+ * are allowed through this entry point.
+ * Manual newsroom runs continue using POST.
+ */
+export async function GET(
+  request: Request,
+) {
+  const cronSecret =
+    process.env.CRON_SECRET;
+
+  const authorization =
+    request.headers.get(
+      "authorization",
+    );
+
+  if (
+    !cronSecret ||
+    authorization !==
+      `Bearer ${cronSecret}`
+  ) {
+    return NextResponse.json(
+      {
+        error:
+          "Unauthorised",
+      },
+      {
+        status: 401,
+      },
+    );
+  }
+
+  return POST(request);
 }
