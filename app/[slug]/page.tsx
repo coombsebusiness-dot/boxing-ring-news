@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import SiteHeader from "@/components/site/SiteHeader";
 import SiteFooter from "@/components/site/SiteFooter";
 import StoryShareButtons from "@/components/stories/StoryShareButtons";
+import ArticleSidebarAd from "@/components/ads/ArticleSidebarAd";
+import ArticleLeaderboardAd from "@/components/ads/ArticleLeaderboardAd";
 import DeskLandingPage from "@/components/desks/DeskLandingPage";
 import { supabase } from "@/lib/supabase/public";
 import { sanitizeStoryHtml } from "@/lib/security/sanitizeStoryHtml";
@@ -749,6 +751,10 @@ export default async function StoryPage({
             </figure>
           ) : null}
 
+          <div className="mx-auto hidden max-w-7xl px-6 pt-10 lg:block">
+            <ArticleLeaderboardAd />
+          </div>
+
           <div className="mx-auto grid max-w-7xl gap-12 px-6 py-12 lg:grid-cols-[minmax(0,760px)_1fr] lg:py-16">
             <div>
               {story.intro ? (
@@ -937,6 +943,10 @@ export default async function StoryPage({
 
             <aside className="hidden lg:block">
               <div className="sticky top-8 space-y-10">
+                <div className="flex justify-center">
+                  <ArticleSidebarAd />
+                </div>
+
                 {desk &&
                 relatedStories.length >
                   0 ? (
