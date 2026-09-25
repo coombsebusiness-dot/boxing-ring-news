@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import AdcashAutoTag from "@/components/AdcashAutoTag";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -83,22 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         {children}
 
-        <Script
-          id="aclib"
-          src="https://acscdn.com/script/aclib.js"
-          strategy="afterInteractive"
-        />
-
-        <Script
-          id="adcash-autotag"
-          strategy="afterInteractive"
-        >
-          {`
-            aclib.runAutoTag({
-              zoneId: "re83nhnncg",
-            });
-          `}
-        </Script>
+        <AdcashAutoTag />
       </body>
     </html>
   );
