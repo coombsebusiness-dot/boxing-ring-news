@@ -29,6 +29,7 @@ type StoryEditorStory = {
   hero_image_credit?: string | null;
   seo_title?: string | null;
   meta_description?: string | null;
+  youtube_url?: string | null;
   is_breaking?: boolean | null;
   is_featured?: boolean | null;
   is_exclusive?: boolean | null;
@@ -367,6 +368,36 @@ export default function StoryEditor({
                   ?.hero_image_credit ??
                 ""
               }
+              className="editor-input"
+            />
+          </Field>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-black/10 bg-white p-7">
+        <div className="text-xs font-black uppercase tracking-[0.18em] text-red-600">
+          Video
+        </div>
+
+        <h2 className="mt-2 text-2xl font-black text-black">
+          YouTube Short / Video
+        </h2>
+
+        <p className="mt-2 text-sm leading-6 text-black/50">
+          Paste the YouTube URL for the video connected to this story.
+          Published stories with a video will automatically appear on
+          the Boxing Ring News Videos page.
+        </p>
+
+        <div className="mt-7">
+          <Field label="YouTube URL">
+            <input
+              name="youtube_url"
+              type="url"
+              defaultValue={
+                story?.youtube_url ?? ""
+              }
+              placeholder="https://www.youtube.com/shorts/..."
               className="editor-input"
             />
           </Field>

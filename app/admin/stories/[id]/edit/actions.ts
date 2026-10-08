@@ -489,6 +489,13 @@ if (isHero) {
           "meta_description",
         ) || null,
 
+      youtube_url:
+        String(
+          formData.get(
+            "youtube_url",
+          ) ?? "",
+        ).trim() || null,
+
       hero_image_url:
         heroImageUrl,
 
@@ -543,6 +550,7 @@ if (isHero) {
     status === "updated"
   ) {
     revalidatePath("/");
+    revalidatePath("/videos");
     revalidatePath("/sitemap.xml");
     revalidatePath("/news-sitemap.xml");
     revalidatePath("/feed.xml");

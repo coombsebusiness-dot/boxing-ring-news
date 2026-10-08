@@ -77,6 +77,7 @@ export default async function EditStoryPage({
         hero_image_credit,
         seo_title,
         meta_description,
+        youtube_url,
         is_breaking,
         is_featured,
         is_exclusive,

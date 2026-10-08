@@ -183,6 +183,13 @@ export default async function SiteHeader() {
 
 
           <a
+            href="/videos"
+            className="whitespace-nowrap text-white/75 transition hover:text-red-500"
+          >
+            Videos
+          </a>
+
+          <a
             href="/search"
             className="whitespace-nowrap text-lg leading-none text-white/80 transition hover:text-red-500"
             aria-label="Search"
